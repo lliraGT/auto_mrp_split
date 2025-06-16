@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add Auto Split button to manufacturing order form -->
+    <record id="view_mrp_production_form_inherit_auto_split" model="ir.ui.view">
+        <field name="name">mrp.production.form.inherit.auto.split</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <!-- Using a more generic location for the button - in the header -->
+            <xpath expr="//header" position="inside">
+                <button name="action_auto_split_fixed_batches" 
+                        string="Auto Split (Fixed)" 
+                        type="object"
+                        invisible="not is_special_product or state not in ('draft', 'confirmed')"
+                        class="oe_highlight"/>
+            </xpath>
+            <field name="product_id" position="after">
+                <field name="is_special_product" invisible="1"/>
+            </field>
+        </field>
+    </record>
+    
+    <!-- Confirmation wizard for overproduction -->
+    <record id="view_mrp_auto_split_confirm_form" model="ir.ui.view">
+        <field name="name">mrp.auto.split.confirm.form</field>
+        <field name="model">mrp.auto.split.confirm</field>
+        <field name="arch" type="xml">
+            <form string="Confirm Overproduction">
+                <p>
+                    <strong>Warning:</strong> You are about to produce more than the planned quantity.
+                </p>
+                <group>
+                    <field name="production_id" readonly="1"/>
+                    <field name="original_qty" readonly="1"/>
+                    <field name="future_qty" readonly="1"/>
+                    <field name="split_quantities" invisible="1"/>
+                </group>
+                <footer>
+                    <button string="Confirm Split" name="action_confirm_split" type="object" class="btn-primary"/>
+                    <button string="Cancel" name="action_cancel" type="object" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
